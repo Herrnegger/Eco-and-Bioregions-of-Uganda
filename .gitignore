@@ -1,0 +1,9 @@
+# R / GDAL byproducts
+*.aux.xml
+.Rhistory
+.RData
+.Rproj.user/
+
+# OS cruft
+.DS_Store
+Thumbs.db

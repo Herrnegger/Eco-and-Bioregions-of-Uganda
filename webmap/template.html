@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Uganda Ecoregions &amp; Bioregions Map</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2a7de1">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+__LEAFLET_CSS__
+
+:root {
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+html, body {
+  margin: 0; padding: 0; height: 100%; width: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: #eee;
+}
+#map { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+
+.top-bar {
+  position: absolute;
+  top: calc(10px + env(safe-area-inset-top, 0px));
+  left: 10px;
+  right: 10px;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  pointer-events: none;
+}
+.top-bar > * { pointer-events: auto; }
+
+#layer-select-wrap {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  padding: 8px 10px;
+  max-width: 72%;
+}
+#layer-select-wrap label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 3px;
+}
+#layer-select, #basemap-select {
+  font-size: 15px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 320px;
+  background: #fff;
+  display: block;
+}
+#opacity-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+#opacity-row input[type="range"] {
+  flex: 1;
+  max-width: 260px;
+}
+#opacity-value {
+  font-size: 11px;
+  color: #555;
+  width: 32px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+#locate-btn {
+  background: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+#locate-btn.active { background: #2a7de1; color: #fff; }
+#locate-btn:active { transform: scale(0.95); }
+
+#legend-wrap {
+  position: absolute;
+  bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  left: 10px;
+  z-index: 1000;
+  max-width: min(55vw, 210px);
+  max-height: 34vh;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: max-height 0.2s ease;
+}
+#legend-wrap[data-collapsed="true"] { max-height: 40px; }
+#legend-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 8px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  color: #333;
+  background: #f5f5f5;
+  border-bottom: 1px solid #e5e5e5;
+  flex-shrink: 0;
+}
+#legend-header .chevron { transition: transform 0.2s ease; font-size: 10px; color: #888; }
+#legend-wrap[data-collapsed="true"] #legend-header .chevron { transform: rotate(-90deg); }
+#legend-wrap[data-collapsed="true"] #legend-body { display: none; }
+#legend-body { overflow: auto; padding: 4px; }
+#legend-body img { display: block; width: 100%; height: auto; }
+
+.loc-dot {
+  width: 16px; height: 16px;
+  background: #2a7de1;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(42,125,225,0.4);
+}
+.loc-pulse {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: rgba(42,125,225,0.35);
+  animation: loc-pulse-anim 2s infinite;
+}
+@keyframes loc-pulse-anim {
+  0% { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+
+#status-toast {
+  position: absolute;
+  bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  right: 10px;
+  z-index: 1000;
+  background: rgba(20,20,20,0.85);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+  max-width: 75vw;
+  display: none;
+}
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<div class="top-bar">
+  <div id="layer-select-wrap">
+    <label for="layer-select">Layer</label>
+    <select id="layer-select">
+      <option value="ecoregions">Ecoregions</option>
+      <option value="bioregion_i">Bioregion Level I</option>
+      <option value="bioregion_ii">Bioregion Level II</option>
+      <option value="bioregion_iii">Bioregion Level III</option>
+    </select>
+    <label for="basemap-select" style="margin-top:6px;">Basemap</label>
+    <select id="basemap-select">
+      <option value="street">Street (Esri)</option>
+      <option value="satellite">Satellite (Esri)</option>
+      <option value="topo">Topographic (Esri)</option>
+      <option value="light">Light (Esri)</option>
+      <option value="dark">Dark (Esri)</option>
+      <option value="none">None (blank)</option>
+    </select>
+    <div id="opacity-row">
+      <input type="range" id="opacity-slider" min="0" max="100" value="85">
+      <span id="opacity-value">85%</span>
+    </div>
+  </div>
+  <button id="locate-btn" title="Show my location">&#128205;</button>
+</div>
+
+<div id="legend-wrap" data-collapsed="false">
+  <div id="legend-header">
+    <span id="legend-title">Legend</span>
+    <span class="chevron">&#9660;</span>
+  </div>
+  <div id="legend-body">
+    <img id="legend-img" src="" alt="Legend">
+  </div>
+</div>
+
+<div id="status-toast"></div>
+
+<script>
+__LEAFLET_JS__
+</script>
+
+<script>
+var LAYERS = {
+  ecoregions: {
+    label: "Ecoregions",
+    legendTitle: "Ecoregions of Uganda",
+    bounds: [[-1.701660, 29.374615], [4.442429, 35.055501]],
+    image: "__IMG_ECOREGIONS__",
+    legend: "__IMG_ECOREGIONS_LEGEND__"
+  },
+  bioregion_i: {
+    label: "Bioregion Level I",
+    legendTitle: "Bioregion Level I",
+    bounds: [[-1.702057, 29.374615], [4.442429, 35.055868]],
+    image: "__IMG_BIOREGION_I__",
+    legend: "__IMG_BIOREGION_I_LEGEND__"
+  },
+  bioregion_ii: {
+    label: "Bioregion Level II",
+    legendTitle: "Bioregion Level II",
+    bounds: [[-1.702051, 29.374615], [4.442429, 35.055863]],
+    image: "__IMG_BIOREGION_II__",
+    legend: "__IMG_BIOREGION_II_LEGEND__"
+  },
+  bioregion_iii: {
+    label: "Bioregion Level III",
+    legendTitle: "Bioregion Level III",
+    bounds: [[-1.702051, 29.374615], [4.442429, 35.055863]],
+    image: "__IMG_BIOREGION_III__",
+    legend: "__IMG_BIOREGION_III_LEGEND__"
+  }
+};
+
+var UGANDA_CENTER = [1.35, 32.3];
+
+var map = L.map('map', {
+  zoomControl: true,
+  attributionControl: true
+}).setView(UGANDA_CENTER, 7);
+
+var ESRI_ATTR = 'Tiles &copy; Esri';
+
+var BASEMAPS = {
+  street: {
+    label: "Street (Esri)",
+    layer: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 19,
+      attribution: ESRI_ATTR + ' &mdash; Source: Esri, HERE, Garmin, FAO, NOAA, USGS'
+    })
+  },
+  satellite: {
+    label: "Satellite (Esri)",
+    layer: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 19,
+      attribution: ESRI_ATTR + ' &mdash; Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community'
+    })
+  },
+  topo: {
+    label: "Topographic (Esri)",
+    layer: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 19,
+      attribution: ESRI_ATTR + ' &mdash; Source: Esri, HERE, Garmin, FAO, NOAA, USGS'
+    })
+  },
+  light: {
+    label: "Light (Esri)",
+    layer: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 16,
+      attribution: ESRI_ATTR
+    })
+  },
+  dark: {
+    label: "Dark (Esri)",
+    layer: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 16,
+      attribution: ESRI_ATTR
+    })
+  },
+  none: {
+    label: "None (blank)",
+    layer: null
+  }
+};
+
+var currentBasemap = null;
+var basemapTileErrorCount = 0;
+
+function showBasemap(key) {
+  var def = BASEMAPS[key];
+  if (!def) return;
+  if (currentBasemap && currentBasemap.layer) {
+    map.removeLayer(currentBasemap.layer);
+  }
+  currentBasemap = def;
+  basemapTileErrorCount = 0;
+  if (def.layer) {
+    def.layer.addTo(map);
+    def.layer.off('tileerror').on('tileerror', function () {
+      basemapTileErrorCount++;
+      if (basemapTileErrorCount === 6) {
+        showToast('Map tiles failing to load — try a different basemap above.', 5000);
+      }
+    });
+  }
+}
+
+document.getElementById('basemap-select').addEventListener('change', function (e) {
+  showBasemap(e.target.value);
+});
+
+showBasemap('street');
+
+var currentOverlay = null;
+var opacitySlider = document.getElementById('opacity-slider');
+var opacityValueLabel = document.getElementById('opacity-value');
+var currentOpacity = opacitySlider.value / 100;
+
+function showLayer(key) {
+  var def = LAYERS[key];
+  if (!def) return;
+  if (currentOverlay) {
+    map.removeLayer(currentOverlay);
+    currentOverlay = null;
+  }
+  currentOverlay = L.imageOverlay(def.image, def.bounds, { opacity: currentOpacity }).addTo(map);
+  document.getElementById('legend-img').src = def.legend;
+  document.getElementById('legend-title').textContent = def.legendTitle;
+}
+
+document.getElementById('layer-select').addEventListener('change', function (e) {
+  showLayer(e.target.value);
+});
+
+opacitySlider.addEventListener('input', function (e) {
+  currentOpacity = e.target.value / 100;
+  opacityValueLabel.textContent = e.target.value + '%';
+  if (currentOverlay) {
+    currentOverlay.setOpacity(currentOpacity);
+  }
+});
+
+showLayer('ecoregions');
+
+// legend collapse toggle
+var legendWrap = document.getElementById('legend-wrap');
+document.getElementById('legend-header').addEventListener('click', function () {
+  var collapsed = legendWrap.getAttribute('data-collapsed') === 'true';
+  legendWrap.setAttribute('data-collapsed', collapsed ? 'false' : 'true');
+});
+
+// geolocation
+var locateBtn = document.getElementById('locate-btn');
+var statusToast = document.getElementById('status-toast');
+var userMarker = null;
+var accuracyCircle = null;
+var watchId = null;
+var hasCenteredOnUser = false;
+
+function showToast(msg, ms) {
+  statusToast.textContent = msg;
+  statusToast.style.display = 'block';
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(function () {
+    statusToast.style.display = 'none';
+  }, ms || 3500);
+}
+
+var userIcon = L.divIcon({
+  className: '',
+  html: '<div class="loc-pulse" style="position:absolute; top:0; left:0;"></div><div class="loc-dot" style="position:absolute; top:0; left:0;"></div>',
+  iconSize: [16, 16],
+  iconAnchor: [8, 8]
+});
+
+function onPosition(pos) {
+  var lat = pos.coords.latitude;
+  var lng = pos.coords.longitude;
+  var acc = pos.coords.accuracy;
+  var latlng = [lat, lng];
+
+  if (!userMarker) {
+    userMarker = L.marker(latlng, { icon: userIcon, zIndexOffset: 1000 }).addTo(map);
+    accuracyCircle = L.circle(latlng, { radius: acc, color: '#2a7de1', weight: 1, fillColor: '#2a7de1', fillOpacity: 0.12 }).addTo(map);
+  } else {
+    userMarker.setLatLng(latlng);
+    accuracyCircle.setLatLng(latlng);
+    accuracyCircle.setRadius(acc);
+  }
+
+  if (!hasCenteredOnUser) {
+    hasCenteredOnUser = true;
+    map.setView(latlng, 13);
+  }
+}
+
+function onPositionError(err) {
+  locateBtn.classList.remove('active');
+  var msg = 'Could not get location.';
+  var ms = 4000;
+  if (err && err.code === 1) {
+    msg = 'Location permission denied. Check the site permission icon next to the address bar, and that your device\'s Location setting is on.';
+    ms = 7000;
+  } else if (err && err.code === 2) {
+    msg = 'Location unavailable. Make sure device Location/GPS is turned on.';
+    ms = 5000;
+  } else if (err && err.code === 3) {
+    msg = 'Location request timed out. Try again outdoors or with a clearer GPS signal.';
+    ms = 5000;
+  }
+  showToast(msg, ms);
+}
+
+locateBtn.addEventListener('click', function () {
+  if (!('geolocation' in navigator)) {
+    showToast('Geolocation is not supported on this device/browser.', 4000);
+    return;
+  }
+  if (watchId !== null) {
+    navigator.geolocation.clearWatch(watchId);
+    watchId = null;
+    locateBtn.classList.remove('active');
+    showToast('Live location tracking stopped.', 2500);
+    return;
+  }
+  locateBtn.classList.add('active');
+  hasCenteredOnUser = false;
+  showToast('Locating…', 2500);
+  watchId = navigator.geolocation.watchPosition(onPosition, onPositionError, {
+    enableHighAccuracy: true,
+    maximumAge: 5000,
+    timeout: 15000
+  });
+});
+
+// PWA: register service worker for offline app-shell + tile caching.
+// Harmless no-op if sw.js isn't hosted alongside this page (e.g. when
+// this file is shared standalone) or if run without a secure context.
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function () {
+      // not hosted over https/localhost, or sw.js not present -- ignore
+    });
+  });
+}
+</script>
+
+</body>
+</html>
