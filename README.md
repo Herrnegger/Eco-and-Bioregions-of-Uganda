@@ -26,15 +26,27 @@ Hierarchical codes preserve lineage back to the parent ecoregion: a letter denot
 
 ## The five ecoregions (EcoR)
 
-| Code | Name | Area | Notes |
-|---|---|---|---|
-| **CNP** | Central-Northern Plains | 100,490 km² (41.7% of Uganda) | Lowest, gentlest terrain (mean elev. 881 masl); extends from Mt. Elgon's foothills to L. Albert and north to South Sudan/DRC. Annual rainfall ~1,268 mm. |
-| **SSWL** | Southern Savanna-Woodland Landscapes | 54,677 km² | Southern Uganda west of L. Victoria, plus West Nile highlands and Mt. Elgon patches. Mean elevation 1,271 masl. Annual rainfall ~1,241 mm. |
-| **KDS** | Karamoja Dry Steppe | 18,835 km² | Northeastern Uganda. Uganda's driest ecoregion (~874 mm/yr). Semi-arid thicket and bush steppe, dominated by Acacia-Commiphora bushland. |
-| **VKWW** | Lake Victoria–Kyoga Wetland-Woodlands | 54,677 km² (22.7%) | Between Lakes Victoria and Kyoga, including all L. Victoria islands. Mean elevation 1,133 masl. |
-| **MAR** | Montane-Alpine Ranges | 7,182 km² (3%) | Uganda's highest terrain (>1,700 masl): Rwenzori, Mt. Elgon, Southern Kigezi. Afromontane rainforest is the dominant, most ecologically distinctive vegetation. |
+### CNP — Central-Northern Plains
 
-*(Area/elevation/climate figures as reported in Aine et al. 2026, Section 3.6.)*
+100,490 km² (41.7% of Uganda's total area, 49.9% of its terrestrial area) — Uganda's largest ecoregion. Extends westward from Mount Elgon's foothills to Lake Albert's southern base, and north to South Sudan, DRC, and the Karamoja Dry Steppe. Gently sloping (average slope 1.9%) with Uganda's lowest mean elevation (881 ± 47 masl) and lowest point (614.4 masl, where the Nile exits into South Sudan). Receives 1,268 mm of rain annually with a fairly short dry season. Dominant vegetation: Butyrospermum wooded grasslands and Moist Combretum wooded grasslands, with smaller patches of Terminalia woodland, lowland bamboo, and palm wooded grasslands.
+
+### SSWL — Southern Savanna-Woodland Landscapes
+
+54,677 km², mainly in southern Uganda west of Lake Victoria, with smaller disjunct portions in the West Nile highlands and around Mount Elgon. Average elevation 1,271 masl (range 621–1,926 masl), average slope 5.2%. Receives 1,241 mm of rain annually; classified as arid (aridity index 0.07). Dominant vegetation: Evergreen and semi-evergreen bushland and thicket, alongside edaphic grassland on seasonally flooded soils, palm wooded grassland, and dry Combretum wooded grassland.
+
+### KDS — Karamoja Dry Steppe
+
+18,835 km² in northeastern Uganda, with plains averaging 3.05% slope and elevations from 919–1,796 masl. Uganda's driest ecoregion, receiving only 874 mm of rain annually with a short dry season. Geology is dominated by metamorphic rock, supporting semi-arid thicket and bush steppe. Dominant vegetation: Somalia-Masai Acacia-Commiphora deciduous bushland and thicket — the single strongest vegetation association found anywhere in the study (indicator value 0.640). Other significant types include dry Combretum wooded grasslands and riverine wooded vegetation.
+
+### VKWW — Lake Victoria-Kyoga Wetland-Woodlands
+
+54,677 km² (22.7% of Uganda), lying between Lakes Victoria and Kyoga and including all Lake Victoria islands, extending north to just below Lake Kyoga. Bordered by Mount Elgon to the east, SSWL to the west, and CNP to the north. Mean elevation 1,133 ± 26 masl, average slope 2.4%. Dominant vegetation: semi-evergreen Guineo-Congolian rainforest along Lake Victoria's drier periphery, with a mean canopy height of 5.2 ± 8.4 m.
+
+### MAR — Montane-Alpine Ranges
+
+7,182 km² (3% of Uganda's terrestrial area) — the smallest and highest ecoregion, covering all areas above 1,700 masl. Predominant in the highlands of Southern Kigezi, Mt. Rwenzori, and Mt. Elgon, with small patches in Karamoja. Geologically heterogeneous (volcanic rock on Mt. Elgon, metamorphic in Kigezi/Rwenzori/Karamoja). Dominant vegetation: Afromontane rainforest, the most ecologically distinctive vegetation type found in the study (indicator value 0.63), along with Afroalpine vegetation, Afromontane bamboo, the Montane Ericaceous belt, and Hagenia abyssinica forest.
+
+*(Descriptions and figures as reported in Aine et al. 2026, Section 3.6.)*
 
 ## Maps
 
