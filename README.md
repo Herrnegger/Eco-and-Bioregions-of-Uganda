@@ -52,19 +52,19 @@ Hierarchical codes preserve lineage back to the parent ecoregion: a letter denot
 
 **Ecoregions**
 
-![Ecoregions of Uganda](output/png/ecoregions.png)
+![Ecoregions of Uganda](output/png/ecoregions_full.png)
 
 **Bioregion Level I**
 
-![Bioregion Level I](output/png/bioregion_i.png)
+![Bioregion Level I](output/png/bioregion_i_full.png)
 
 **Bioregion Level II**
 
-![Bioregion Level II](output/png/bioregion_ii.png)
+![Bioregion Level II](output/png/bioregion_ii_full.png)
 
 **Bioregion Level III**
 
-![Bioregion Level III](output/png/bioregion_iii.png)
+![Bioregion Level III](output/png/bioregion_iii_full.png)
 
 ## The web map
 
