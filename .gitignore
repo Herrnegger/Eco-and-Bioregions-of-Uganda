@@ -7,3 +7,7 @@
 # OS cruft
 .DS_Store
 Thumbs.db
+
+# Downloaded source rasters (WorldClim etc.) -- large, re-downloadable via
+# scripts/compute_zonal_stats.R; not needed to run the built web maps.
+/data_external/

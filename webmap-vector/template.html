@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Uganda Ecoregions &amp; Bioregions Map</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2a7de1">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+__LEAFLET_CSS__
+
+:root {
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+html, body {
+  margin: 0; padding: 0; height: 100%; width: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: #eee;
+}
+#map { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+
+.top-bar {
+  position: absolute;
+  top: calc(10px + env(safe-area-inset-top, 0px));
+  left: 10px;
+  right: 10px;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  pointer-events: none;
+}
+.top-bar > * { pointer-events: auto; }
+
+#control-wrap {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  padding: 8px 10px;
+  max-width: 72%;
+}
+#control-wrap label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 3px;
+  margin-top: 6px;
+}
+#control-wrap label:first-of-type { margin-top: 0; }
+#layer-select, #mode-select, #basemap-select {
+  font-size: 15px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 320px;
+  background: #fff;
+  display: block;
+}
+#opacity-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+#opacity-row input[type="range"] { flex: 1; max-width: 260px; }
+#opacity-value { font-size: 11px; color: #555; width: 32px; text-align: right; flex-shrink: 0; }
+
+#top-right-btns { display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+#locate-btn, #info-btn {
+  background: #fff; border: none; border-radius: 50%;
+  width: 44px; height: 44px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  font-size: 20px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0; color: #333;
+}
+#locate-btn.active { background: #2a7de1; color: #fff; }
+#locate-btn:active, #info-btn:active { transform: scale(0.95); }
+
+#legend-wrap {
+  position: absolute;
+  bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  left: 10px;
+  z-index: 1000;
+  max-width: min(58vw, 230px);
+  max-height: 42vh;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: max-height 0.2s ease;
+}
+#legend-wrap[data-collapsed="true"] { max-height: 40px; }
+#legend-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 9px; cursor: pointer;
+  font-size: 11px; font-weight: 600; color: #333;
+  background: #f5f5f5; border-bottom: 1px solid #e5e5e5; flex-shrink: 0;
+}
+#legend-header .chevron { transition: transform 0.2s ease; font-size: 10px; color: #888; }
+#legend-wrap[data-collapsed="true"] #legend-header .chevron { transform: rotate(-90deg); }
+#legend-wrap[data-collapsed="true"] #legend-body { display: none; }
+#legend-body { overflow: auto; padding: 8px 10px; font-size: 12px; }
+.legend-row { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.legend-swatch { width: 16px; height: 16px; border-radius: 3px; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.15); }
+.legend-ramp-row { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; font-size: 11px; }
+
+.loc-dot { width: 16px; height: 16px; background: #2a7de1; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 0 0 2px rgba(42,125,225,0.4); }
+.loc-pulse { width: 16px; height: 16px; border-radius: 50%; background: rgba(42,125,225,0.35); animation: loc-pulse-anim 2s infinite; }
+@keyframes loc-pulse-anim { 0% { transform: scale(1); opacity: 0.7; } 100% { transform: scale(2.6); opacity: 0; } }
+
+#status-toast {
+  position: absolute; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); right: 10px;
+  z-index: 1000; background: rgba(20,20,20,0.85); color: #fff;
+  padding: 8px 12px; border-radius: 8px; font-size: 12px; line-height: 1.4; max-width: 75vw; display: none;
+}
+
+#info-modal { position: absolute; inset: 0; z-index: 2000; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; padding: 20px; }
+#info-modal[hidden] { display: none; }
+#info-modal-card { background: #fff; border-radius: 12px; max-width: 420px; width: 100%; max-height: 80vh; display: flex; flex-direction: column; box-shadow: 0 8px 30px rgba(0,0,0,0.3); overflow: hidden; }
+#info-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; font-weight: 600; font-size: 15px; border-bottom: 1px solid #eee; flex-shrink: 0; }
+#info-close-btn { background: none; border: none; font-size: 22px; line-height: 1; cursor: pointer; color: #888; padding: 0 4px; }
+#info-modal-body { padding: 14px 16px; overflow-y: auto; font-size: 13px; line-height: 1.5; color: #333; }
+#info-modal-body p { margin: 0 0 10px 0; }
+#info-modal-body a { color: #2a7de1; }
+
+.leaflet-popup-content { font-size: 13px; line-height: 1.4; }
+.popup-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+.popup-subtitle { font-weight: 400; font-size: 11px; color: #666; }
+.popup-table td { padding: 1px 0; }
+.popup-table td:first-child { color: #666; padding-right: 10px; white-space: nowrap; }
+.popup-table td:last-child { font-weight: 600; text-align: right; }
+
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<div class="top-bar">
+  <div id="control-wrap">
+    <label for="layer-select">Layer</label>
+    <select id="layer-select">
+      <option value="ecoregions">Ecoregions</option>
+      <option value="bioregion_i">Bioregion Level I</option>
+      <option value="bioregion_ii">Bioregion Level II</option>
+      <option value="bioregion_iii">Bioregion Level III</option>
+    </select>
+    <label for="mode-select">Display</label>
+    <select id="mode-select">
+      <option value="categorical">Categorical (regions)</option>
+      <option value="elevation">Elevation (choropleth)</option>
+      <option value="precipitation">Annual precipitation (choropleth)</option>
+    </select>
+    <label for="basemap-select">Basemap</label>
+    <select id="basemap-select">
+      <option value="street">Street (Esri)</option>
+      <option value="satellite">Satellite (Esri)</option>
+      <option value="topo">Topographic (Esri)</option>
+      <option value="light">Light (Esri)</option>
+      <option value="dark">Dark (Esri)</option>
+      <option value="none">None (blank)</option>
+    </select>
+    <div id="opacity-row">
+      <input type="range" id="opacity-slider" min="0" max="100" value="80">
+      <span id="opacity-value">80%</span>
+    </div>
+  </div>
+  <div id="top-right-btns">
+    <button id="locate-btn" title="Show my location">&#128205;</button>
+    <button id="info-btn" title="About this map">&#8505;</button>
+  </div>
+</div>
+
+<div id="legend-wrap" data-collapsed="false">
+  <div id="legend-header">
+    <span id="legend-title">Legend</span>
+    <span class="chevron">&#9660;</span>
+  </div>
+  <div id="legend-body"></div>
+</div>
+
+<div id="status-toast"></div>
+
+<div id="info-modal" hidden>
+  <div id="info-modal-card">
+    <div id="info-modal-header">
+      <span>About this map</span>
+      <button id="info-close-btn" title="Close">&times;</button>
+    </div>
+    <div id="info-modal-body">
+      <p><strong>⚠️ This web map is a fast, informal visualization tool</strong> built to make the published classification easy to browse, click for stats, and check against GPS position in the field. Please refer to the paper below for more information.</p>
+      <p>Click any region for its area, share of Uganda, mean elevation, and mean annual precipitation. Area is computed directly from the polygon geometry; elevation and precipitation are area-weighted zonal statistics computed from WorldClim data (rainfall reflects the 1971&ndash;2000 climate normal).</p>
+      <p>Switch <strong>Display</strong> to color regions by elevation or precipitation instead of category, using natural-breaks classification.</p>
+      <p><strong>Citation:</strong><br>
+      Aine, A., Graf, W., Stecher, G., Scharl, T., Ssanyu, G.A., Herrnegger, M. (2026). Hierarchical eco-zone delineation in data-scarce Afrotropical river landscapes using global datasets. <em>International Journal of Applied Earth Observation and Geoinformation</em>, 148, 105221.<br>
+      <a href="https://doi.org/10.1016/j.jag.2026.105221" target="_blank" rel="noopener">doi.org/10.1016/j.jag.2026.105221</a></p>
+      <p><strong>Data:</strong> <a href="https://doi.org/10.5281/zenodo.17363432" target="_blank" rel="noopener">doi.org/10.5281/zenodo.17363432</a> (Zenodo)</p>
+      <p style="font-size:11px; color:#777;">Paper licensed CC BY-NC-ND 4.0. Elevation: WorldClim 2.1 (Fick &amp; Hijmans 2017). Precipitation: WorldClim 2.1 monthly normals, summed to annual total.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+__LEAFLET_JS__
+</script>
+
+<script>
+var LAYER_DATA = {
+  ecoregions: __GEOJSON_ECOREGIONS__,
+  bioregion_i: __GEOJSON_BIOREGION_I__,
+  bioregion_ii: __GEOJSON_BIOREGION_II__,
+  bioregion_iii: __GEOJSON_BIOREGION_III__
+};
+var LAKES_DATA = __GEOJSON_LAKES__;
+var BREAKS = __BREAKS_JSON__;
+
+var LAYER_LABELS = {
+  ecoregions: "Ecoregions",
+  bioregion_i: "Bioregion Level I",
+  bioregion_ii: "Bioregion Level II",
+  bioregion_iii: "Bioregion Level III"
+};
+
+var ELEV_COLORS = ['#ffffd4','#fed98e','#fe9929','#d95f0e','#993404','#662506'];
+var PRECIP_COLORS = ['#f1eef6','#bdc9e1','#74a9cf','#2b8cbe','#045a8d','#023858'];
+
+function classify(value, breaks) {
+  for (var i = 0; i < breaks.length - 2; i++) {
+    if (value <= breaks[i + 1]) return i;
+  }
+  return breaks.length - 2;
+}
+
+var UGANDA_CENTER = [1.35, 32.3];
+var map = L.map('map', { zoomControl: true, attributionControl: true }).setView(UGANDA_CENTER, 7);
+
+var ESRI_ATTR = 'Tiles &copy; Esri';
+var BASEMAPS = {
+  street:    { layer: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: ESRI_ATTR + ' &mdash; Source: Esri, HERE, Garmin, FAO, NOAA, USGS' }) },
+  satellite: { layer: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: ESRI_ATTR + ' &mdash; Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community' }) },
+  topo:      { layer: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: ESRI_ATTR + ' &mdash; Source: Esri, HERE, Garmin, FAO, NOAA, USGS' }) },
+  light:     { layer: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom: 16, attribution: ESRI_ATTR }) },
+  dark:      { layer: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom: 16, attribution: ESRI_ATTR }) },
+  none:      { layer: null }
+};
+var currentBasemap = null;
+function showBasemap(key) {
+  var def = BASEMAPS[key];
+  if (!def) return;
+  if (currentBasemap && currentBasemap.layer) map.removeLayer(currentBasemap.layer);
+  currentBasemap = def;
+  if (def.layer) def.layer.addTo(map);
+}
+document.getElementById('basemap-select').addEventListener('change', function (e) { showBasemap(e.target.value); });
+showBasemap('street');
+
+var currentGeoLayer = null;
+var currentLayerKey = 'ecoregions';
+var currentMode = 'categorical';
+var currentOpacity = 0.80;
+
+function styleFeature(feature) {
+  var p = feature.properties;
+  var fillColor;
+  if (currentMode === 'categorical') {
+    fillColor = p.color;
+  } else if (currentMode === 'elevation') {
+    fillColor = ELEV_COLORS[classify(p.elev_mean_m, BREAKS.elevation.breaks)];
+  } else {
+    fillColor = PRECIP_COLORS[classify(p.annual_precip_mm, BREAKS.precipitation.breaks)];
+  }
+  return { fillColor: fillColor, fillOpacity: currentOpacity, color: '#333', weight: 0.6, opacity: 0.7 };
+}
+
+function fmtNum(n) { return Math.round(n).toLocaleString(); }
+
+var FULL_NAMES = {
+  CNP: 'Central-Northern Plains',
+  SSWL: 'Southern Savanna-Woodland Landscapes',
+  KDS: 'Karamoja Dry Steppe',
+  VKWW: 'Lake Victoria-Kyoga Wetland-Woodlands',
+  MAR: 'Montane-Alpine Ranges',
+  Lake: 'Lakes'
+};
+
+function popupTitle(p) {
+  var full = FULL_NAMES[p.base_ecoregion];
+  if (!full || full === p.derived_name) return p.derived_name;
+  if (currentLayerKey === 'ecoregions') {
+    // the Ecoregions layer's own name IS the base ecoregion -- lead with
+    // the full descriptive name, short code alongside for reference
+    return full + ' <span class="popup-subtitle">(' + p.derived_name + ')</span>';
+  }
+  // Bioregion levels: lead with the hierarchical code, full ecoregion name
+  // as context underneath
+  return p.derived_name + '<br><span class="popup-subtitle">' + full + '</span>';
+}
+
+function popupContent(p) {
+  var html = '<div class="popup"><div class="popup-title">' + popupTitle(p) + '</div>';
+  html += '<table class="popup-table">';
+  html += '<tr><td>Area</td><td>' + fmtNum(p.area_km2) + ' km²</td></tr>';
+  html += '<tr><td>Share of Uganda</td><td>' + p.pct_of_uganda + '%</td></tr>';
+  html += '<tr><td>Mean elevation</td><td>' + fmtNum(p.elev_mean_m) + ' m</td></tr>';
+  html += '<tr><td>Annual precipitation</td><td>' + fmtNum(p.annual_precip_mm) + ' mm</td></tr>';
+  html += '</table></div>';
+  return html;
+}
+
+// Lakes are drawn as a standalone, always-on overlay on top of whichever
+// classification layer is active. The Ecoregions-level shapefile has no
+// separate lake polygon at all (geometrically merged into VKWW), so simply
+// naming it correctly isn't enough -- the original published maps still
+// show lakes distinctly at every level, so we do too.
+var lakesLayer = L.geoJSON(LAKES_DATA, {
+  style: function () {
+    return { fillColor: LAKES_DATA.features[0].properties.color, fillOpacity: currentOpacity, color: '#1b4a6b', weight: 0.6, opacity: 0.8 };
+  },
+  onEachFeature: function (feature, layer) {
+    layer.bindPopup(popupContent(feature.properties));
+    layer.on('mouseover', function () { layer.setStyle({ weight: 2.2, color: '#111' }); });
+    layer.on('mouseout', function () { lakesLayer.resetStyle(layer); });
+  }
+});
+
+function loadLayer(key) {
+  if (currentGeoLayer) { map.removeLayer(currentGeoLayer); currentGeoLayer = null; }
+  currentGeoLayer = L.geoJSON(LAYER_DATA[key], {
+    style: styleFeature,
+    onEachFeature: function (feature, layer) {
+      layer.bindPopup(popupContent(feature.properties));
+      layer.on('mouseover', function () {
+        // Just restyle -- deliberately not reordering z-order (bringToFront)
+        // here. Doing DOM reordering on every hover, right as the user is
+        // about to click, was interfering with the click/popup handling.
+        // The lakes overlay is brought to front once when the layer loads,
+        // which is enough to keep it visible above the base fill.
+        layer.setStyle({ weight: 2.2, color: '#111' });
+      });
+      layer.on('mouseout', function () { currentGeoLayer.resetStyle(layer); });
+    }
+  }).addTo(map);
+  currentLayerKey = key;
+  lakesLayer.addTo(map);
+  lakesLayer.eachLayer(function (l) { l.bringToFront(); });
+  updateLegend();
+}
+
+function restyleAll() {
+  if (currentGeoLayer) currentGeoLayer.setStyle(styleFeature);
+  lakesLayer.setStyle({ fillOpacity: currentOpacity * 1.0 });
+  updateLegend();
+}
+
+function updateLegend() {
+  var body = document.getElementById('legend-body');
+  var title = document.getElementById('legend-title');
+  body.innerHTML = '';
+
+  if (currentMode === 'categorical') {
+    title.textContent = LAYER_LABELS[currentLayerKey];
+    var seen = {};
+    var rows = [];
+    LAYER_DATA[currentLayerKey].features.forEach(function (f) {
+      var p = f.properties;
+      if (!seen[p.derived_name]) {
+        seen[p.derived_name] = true;
+        rows.push(p);
+      }
+    });
+    if (!seen['Lake'] && !seen['Lakes']) {
+      rows.push({ derived_name: 'Lakes', base_ecoregion: 'Lake', color: LAKES_DATA.features[0].properties.color, area_km2: -1 });
+    }
+    rows.sort(function (a, b) {
+      if (a.base_ecoregion !== b.base_ecoregion) return a.base_ecoregion.localeCompare(b.base_ecoregion);
+      return b.area_km2 - a.area_km2;
+    });
+    rows.forEach(function (p) {
+      var row = document.createElement('div');
+      row.className = 'legend-row';
+      row.innerHTML = '<span class="legend-swatch" style="background:' + p.color + '"></span><span>' + p.derived_name + '</span>';
+      body.appendChild(row);
+    });
+  } else {
+    var def = BREAKS[currentMode];
+    var colors = currentMode === 'elevation' ? ELEV_COLORS : PRECIP_COLORS;
+    title.textContent = def.label;
+    for (var i = 0; i < colors.length; i++) {
+      var lo = Math.round(def.breaks[i]);
+      var hi = Math.round(def.breaks[i + 1]);
+      var row = document.createElement('div');
+      row.className = 'legend-ramp-row';
+      row.innerHTML = '<span class="legend-swatch" style="background:' + colors[i] + '"></span><span>' + lo + '–' + hi + ' ' + def.unit + '</span>';
+      body.appendChild(row);
+    }
+  }
+}
+
+document.getElementById('layer-select').addEventListener('change', function (e) { loadLayer(e.target.value); });
+document.getElementById('mode-select').addEventListener('change', function (e) { currentMode = e.target.value; restyleAll(); });
+
+var opacitySlider = document.getElementById('opacity-slider');
+var opacityValueLabel = document.getElementById('opacity-value');
+opacitySlider.addEventListener('input', function (e) {
+  currentOpacity = e.target.value / 100;
+  opacityValueLabel.textContent = e.target.value + '%';
+  restyleAll();
+});
+
+loadLayer('ecoregions');
+
+var legendWrap = document.getElementById('legend-wrap');
+document.getElementById('legend-header').addEventListener('click', function () {
+  var collapsed = legendWrap.getAttribute('data-collapsed') === 'true';
+  legendWrap.setAttribute('data-collapsed', collapsed ? 'false' : 'true');
+});
+
+var infoModal = document.getElementById('info-modal');
+document.getElementById('info-btn').addEventListener('click', function () { infoModal.hidden = false; });
+document.getElementById('info-close-btn').addEventListener('click', function () { infoModal.hidden = true; });
+infoModal.addEventListener('click', function (e) { if (e.target === infoModal) infoModal.hidden = true; });
+
+var locateBtn = document.getElementById('locate-btn');
+var statusToast = document.getElementById('status-toast');
+var userMarker = null, accuracyCircle = null, watchId = null, hasCenteredOnUser = false;
+
+function showToast(msg, ms) {
+  statusToast.textContent = msg;
+  statusToast.style.display = 'block';
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(function () { statusToast.style.display = 'none'; }, ms || 3500);
+}
+
+var userIcon = L.divIcon({
+  className: '',
+  html: '<div class="loc-pulse" style="position:absolute; top:0; left:0;"></div><div class="loc-dot" style="position:absolute; top:0; left:0;"></div>',
+  iconSize: [16, 16], iconAnchor: [8, 8]
+});
+
+function onPosition(pos) {
+  var latlng = [pos.coords.latitude, pos.coords.longitude];
+  var acc = pos.coords.accuracy;
+  if (!userMarker) {
+    userMarker = L.marker(latlng, { icon: userIcon, zIndexOffset: 1000 }).addTo(map);
+    accuracyCircle = L.circle(latlng, { radius: acc, color: '#2a7de1', weight: 1, fillColor: '#2a7de1', fillOpacity: 0.12 }).addTo(map);
+  } else {
+    userMarker.setLatLng(latlng); accuracyCircle.setLatLng(latlng); accuracyCircle.setRadius(acc);
+  }
+  if (!hasCenteredOnUser) { hasCenteredOnUser = true; map.setView(latlng, 13); }
+}
+function onPositionError(err) {
+  locateBtn.classList.remove('active');
+  var msg = 'Could not get location.', ms = 4000;
+  if (err && err.code === 1) { msg = 'Location permission denied. Check the site permission icon next to the address bar, and that your device\'s Location setting is on.'; ms = 7000; }
+  else if (err && err.code === 2) { msg = 'Location unavailable. Make sure device Location/GPS is turned on.'; ms = 5000; }
+  else if (err && err.code === 3) { msg = 'Location request timed out. Try again outdoors or with a clearer GPS signal.'; ms = 5000; }
+  showToast(msg, ms);
+}
+locateBtn.addEventListener('click', function () {
+  if (!('geolocation' in navigator)) { showToast('Geolocation is not supported on this device/browser.', 4000); return; }
+  if (watchId !== null) {
+    navigator.geolocation.clearWatch(watchId); watchId = null;
+    locateBtn.classList.remove('active'); showToast('Live location tracking stopped.', 2500);
+    return;
+  }
+  locateBtn.classList.add('active'); hasCenteredOnUser = false; showToast('Locating…', 2500);
+  watchId = navigator.geolocation.watchPosition(onPosition, onPositionError, { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 });
+});
+
+// PWA: register service worker for offline app-shell caching. Harmless
+// no-op if sw.js isn't hosted alongside this page or without a secure
+// context (e.g. this file shared standalone rather than via GitHub Pages).
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,5 @@
+{
+  "elevation": {"breaks": [869, 960, 1185, 1412, 1898, 2523, 3235], "unit": "m", "label": "Elevation"},
+  "precipitation": {"breaks": [764, 905, 1065, 1213, 1326, 1629, 1970], "unit": "mm/yr", "label": "Annual precipitation"}
+}
+

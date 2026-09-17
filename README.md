@@ -2,10 +2,10 @@
 
 An interactive web map of Uganda's hierarchical ecoregion / bioregion classification, built from the maps and data published in **Aine et al. (2026)**, *"Hierarchical eco-zone delineation in data-scarce Afrotropical river landscapes using global datasets"* (International Journal of Applied Earth Observation and Geoinformation).
 
-**Live map:** https://herrnegger.github.io/Eco-and-Bioregions-of-Uganda/webmap/
+**Live map:** https://herrnegger.github.io/Eco-and-Bioregions-of-Uganda/webmap-vector/
 
-> ### ⚠️ Note on this implementation
-> This web map is a **fast, informal visualization tool**, put together quickly to make the published classification easy to browse, share, and check against GPS position in the field. Please refer to the paper (see [Citation](#citation--data) below) for more information.
+> ### About this map
+> An interactive companion to the published classification — built for browsing, sharing, and checking against GPS position in the field. For citation or detailed analysis, please refer to the paper (see [Citation](#citation--data) below).
 
 ## What this is
 
@@ -19,6 +19,16 @@ Four nested classification levels, each subdividing the one above it:
 | **Bioregion Level III** | 20 (+ Lakes) | Finest tier — experimental, fine-scale abiotic subdivisions |
 
 The framework was derived by unsupervised hierarchical clustering of climate, topography, and hydrology variables (WorldClim, SRTM, global surface water, Uganda wetlands data) at the scale of 2,174 HydroBASIN micro-watersheds, with cluster numbers chosen from silhouette/Jaccard stability analysis. Ecological coherence at each level was then validated bottom-up against Uganda's Potential Natural Vegetation (PNV) using random forest classification — predictive accuracy declined from a strong **80.35%** at the Ecoregion level to a weak **52.69%** at Bioregion Level III, meaning the two coarsest tiers (EcoR and BR I) are ecologically well-supported, while BR II and BR III are best treated as experimental, fine-scale subdivisions rather than validated ecological units.
+
+### Physio-geographical data used for the clustering
+
+The classification is built entirely from **abiotic** (physio-geographical) variables — no biological data went into forming the clusters themselves; vegetation (PNV) was used only afterward, to validate how ecologically coherent the abiotic-based zones turned out to be. Of 20 candidate variables, 16 were retained (4 were dropped for being highly correlated with another, r ≥ 0.95), computed as zonal statistics over the 2,174 HydroBASIN micro-watersheds:
+
+- **Climate** — WorldClim 2.1, 1970–2000 monthly normals, ~1 km resolution (Fick & Hijmans 2017; aridity/PET from Zomer et al. 2022): radiation range; annual temperature minimum and maximum; annual precipitation total; monthly precipitation mean, minimum, and maximum; total evapotranspiration; precipitation seasonality index; climatic water balance
+- **Topography** — 30 arc-second SRTM elevation: mean and majority slope; mean elevation; elevation range
+- **Hydrology / surface water** — Global Surface Water database (Pekel et al. 2016) and the Uganda Wetlands 2008 map: wetland proportion; lake presence/absence
+
+These variables were fed into unsupervised hierarchical clustering (Euclidean distance, `hclust()`), with the four hierarchical cluster-count solutions (*k* = 5, 9, 13, 21 → Ecoregions, BR I, BR II, BR III) chosen from silhouette-width inflection points.
 
 ### Naming convention
 
@@ -68,14 +78,18 @@ Hierarchical codes preserve lineage back to the parent ecoregion: a letter denot
 
 ## The web map
 
-Built with [Leaflet](https://leafletjs.com/), packaged as an installable offline-capable PWA:
+Built with [Leaflet](https://leafletjs.com/) on real vector polygons (not static images), packaged as an installable offline-capable PWA:
 
 - Switch between the four classification layers and adjust overlay opacity
+- Click any region for its area, share of Uganda, mean elevation, and mean annual precipitation (area-weighted zonal statistics computed from WorldClim, not the shapefiles' own attribute table — see [Repository structure](#repository-structure))
+- Switch **Display** to color regions by elevation or precipitation instead of category, using natural-breaks classification
 - Switch basemap (Street / Satellite / Topographic / Light / Dark, all Esri — no API key needed)
 - Show live GPS position (📍 button) for field orientation
-- Collapsible legend matching the active layer, cropped from the original map exports
-- ℹ️ info panel with this citation and disclaimer, always available in the app
-- Installable to a phone home screen; previously visited map tiles are cached for offline use
+- Collapsible legend matching the active layer and display mode
+- ℹ️ info panel with citation and background, always available in the app
+- Installable to a phone home screen; the app shell and previously visited map tiles are cached for offline use
+
+A lighter, image-based version (no click-for-stats, but a smaller download) is also available at [`webmap/`](webmap/).
 
 ## Citation & data
 
@@ -92,23 +106,26 @@ Paper license: CC BY-NC-ND 4.0.
 ```
 eco_bioregions_geotiffs/   source GeoTIFFs (rendered map exports, one per level)
 output/png/                 cropped/reprojected map layers + legend panels (generated)
-webmap/                     the web map itself (index.html, manifest, service worker, vendor libs)
+webmap/                      the image-based web map (index.html, manifest, service worker, vendor libs)
+webmap-vector/                the primary, vector-based web map (same structure, plus data/*.geojson)
 scripts/                    R build pipeline (see below)
 ```
 
+The vector map's polygons and statistics come from shapefiles and WorldClim rasters that live outside this repo (paths hardcoded at the top of `scripts/build_vector_layers.R` and `scripts/compute_zonal_stats.R`) — not needed to just view or redeploy the built site, only to regenerate `webmap-vector/data/*.geojson` from scratch.
+
 ## Rebuilding the map
 
-Requires R with the `terra`, `png`, and `base64enc` packages.
+Requires R with the `terra`, `sf`, `classInt`, `colorspace`, `png`, and `base64enc` packages.
 
 ```r
-# 1. Crop/reproject each GeoTIFF to Uganda's extent + extract legend panels
-Rscript scripts/build_layers.R
+# Image-based map (webmap/):
+Rscript scripts/build_layers.R        # crop/reproject each GeoTIFF + extract legend panels
+Rscript scripts/generate_icons.R      # PWA icons (once, or if the source map changes significantly)
+Rscript scripts/build_html.R          # inject Leaflet + PNGs into webmap/index.html, stamp service worker
 
-# 2. Generate PWA icons (only needed once, or if the source map changes significantly)
-Rscript scripts/generate_icons.R
-
-# 3. Inject Leaflet + all PNGs into webmap/index.html, stamp a fresh service worker
-Rscript scripts/build_html.R
+# Vector map (webmap-vector/):
+Rscript scripts/build_vector_layers.R # derive names/stats/colors, clip lakes, export GeoJSON
+Rscript scripts/build_vector_html.R   # inject Leaflet + GeoJSON into webmap-vector/index.html, stamp service worker
 ```
 
-`webmap/index.html` is fully self-contained (Leaflet and all map/legend imagery are embedded as base64), so it can also be shared and opened directly as a standalone file — GPS location just won't work over `file://` on most mobile browsers, which is why it's also hosted on GitHub Pages.
+Both `index.html` files are fully self-contained (Leaflet and all map data are embedded directly, as base64 images or inline GeoJSON), so either can also be shared and opened directly as a standalone file — GPS location just won't work over `file://` on most mobile browsers, which is why they're also hosted on GitHub Pages.
