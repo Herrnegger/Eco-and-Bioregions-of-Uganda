@@ -2,10 +2,10 @@
 // data included) on install, and opportunistically caches basemap tiles as
 // they're fetched so previously viewed areas stay visible without a signal.
 //
-// 20260917153000 is stamped at build time (scripts/build_html.R) so every
+// 20260917154345 is stamped at build time (scripts/build_html.R) so every
 // rebuild invalidates the previous cache automatically.
 
-var CACHE_NAME = 'ug-ecoregions-20260917153000';
+var CACHE_NAME = 'ug-ecoregions-20260917154345';
 var APP_SHELL = [
   './',
   './index.html',
