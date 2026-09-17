@@ -80,7 +80,13 @@ html, body {
   flex-shrink: 0;
 }
 
-#locate-btn {
+#top-right-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+#locate-btn, #info-btn {
   background: #fff;
   border: none;
   border-radius: 50%;
@@ -93,9 +99,61 @@ html, body {
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
+  color: #333;
 }
 #locate-btn.active { background: #2a7de1; color: #fff; }
-#locate-btn:active { transform: scale(0.95); }
+#locate-btn:active, #info-btn:active { transform: scale(0.95); }
+
+#info-modal {
+  position: absolute;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+#info-modal[hidden] { display: none; }
+#info-modal-card {
+  background: #fff;
+  border-radius: 12px;
+  max-width: 420px;
+  width: 100%;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  overflow: hidden;
+}
+#info-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  font-weight: 600;
+  font-size: 15px;
+  border-bottom: 1px solid #eee;
+  flex-shrink: 0;
+}
+#info-close-btn {
+  background: none;
+  border: none;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  color: #888;
+  padding: 0 4px;
+}
+#info-modal-body {
+  padding: 14px 16px;
+  overflow-y: auto;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #333;
+}
+#info-modal-body p { margin: 0 0 10px 0; }
+#info-modal-body a { color: #2a7de1; }
 
 #legend-wrap {
   position: absolute;
@@ -193,7 +251,28 @@ html, body {
       <span id="opacity-value">85%</span>
     </div>
   </div>
-  <button id="locate-btn" title="Show my location">&#128205;</button>
+  <div id="top-right-btns">
+    <button id="locate-btn" title="Show my location">&#128205;</button>
+    <button id="info-btn" title="About this map">&#8505;</button>
+  </div>
+</div>
+
+<div id="info-modal" hidden>
+  <div id="info-modal-card">
+    <div id="info-modal-header">
+      <span>About this map</span>
+      <button id="info-close-btn" title="Close">&times;</button>
+    </div>
+    <div id="info-modal-body">
+      <p><strong>⚠️ This web map is a fast, informal visualization tool</strong> put together quickly to make the published classification easy to browse and check against GPS position in the field. It is <strong>not</strong> an official, validated, or authoritative GIS product. For analysis, citation of specific figures, or decision-making, please use the peer-reviewed paper and archived dataset below instead of this app.</p>
+      <p>Shows Uganda's hierarchical <strong>eco-zonation framework</strong>: 5 Ecoregions, subdivided into 8 Bioregion Level I, 12 Level II, and 20 Level III units (plus Lakes at each level). Derived from climate, topography, and hydrology data via unsupervised clustering, validated against potential natural vegetation. Ecological coherence is strong at the Ecoregion/BR-I level (accuracy 80.35%) and weaker at finer BR-II/BR-III levels (52.69%) — treat the finer tiers as experimental subdivisions.</p>
+      <p><strong>Citation:</strong><br>
+      Aine, A., Graf, W., Stecher, G., Scharl, T., Ssanyu, G.A., Herrnegger, M. (2026). Hierarchical eco-zone delineation in data-scarce Afrotropical river landscapes using global datasets. <em>International Journal of Applied Earth Observation and Geoinformation</em>, 148, 105221.<br>
+      <a href="https://doi.org/10.1016/j.jag.2026.105221" target="_blank" rel="noopener">doi.org/10.1016/j.jag.2026.105221</a></p>
+      <p><strong>Data:</strong> <a href="https://doi.org/10.5281/zenodo.17363432" target="_blank" rel="noopener">doi.org/10.5281/zenodo.17363432</a> (Zenodo)</p>
+      <p style="font-size:11px; color:#777;">Paper licensed CC BY-NC-ND 4.0.</p>
+    </div>
+  </div>
 </div>
 
 <div id="legend-wrap" data-collapsed="false">
@@ -359,6 +438,18 @@ var legendWrap = document.getElementById('legend-wrap');
 document.getElementById('legend-header').addEventListener('click', function () {
   var collapsed = legendWrap.getAttribute('data-collapsed') === 'true';
   legendWrap.setAttribute('data-collapsed', collapsed ? 'false' : 'true');
+});
+
+// info modal
+var infoModal = document.getElementById('info-modal');
+document.getElementById('info-btn').addEventListener('click', function () {
+  infoModal.hidden = false;
+});
+document.getElementById('info-close-btn').addEventListener('click', function () {
+  infoModal.hidden = true;
+});
+infoModal.addEventListener('click', function (e) {
+  if (e.target === infoModal) infoModal.hidden = true;
 });
 
 // geolocation
