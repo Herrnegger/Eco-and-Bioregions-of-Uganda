@@ -5,7 +5,7 @@ An interactive web map of Uganda's hierarchical ecoregion / bioregion classifica
 **Live map:** https://herrnegger.github.io/Eco-and-Bioregions-of-Uganda/webmap/
 
 > ### ⚠️ Note on this implementation
-> This web map is a **fast, informal visualization tool**, put together quickly to make the published classification easy to browse, share, and check against GPS position in the field. It is **not** an official, validated, or authoritative GIS product. Region boundaries are shown exactly as published, but for any analysis, citation of specific figures, or decision-making, please refer to the peer-reviewed paper and the archived dataset (see [Citation](#citation--data) below) rather than this app.
+> This web map is a **fast, informal visualization tool**, put together quickly to make the published classification easy to browse, share, and check against GPS position in the field. Please refer to the paper (see [Citation](#citation--data) below) for more information.
 
 ## What this is
 
