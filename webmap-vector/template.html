@@ -76,7 +76,7 @@ html, body {
 .checkbox-label { display: flex; align-items: center; gap: 5px; font-size: 13px; color: #333; cursor: pointer; }
 .checkbox-label input { margin: 0; width: 15px; height: 15px; }
 
-.photo-popup img { display: block; max-width: 240px; width: 100%; height: auto; border-radius: 6px; margin-bottom: 4px; }
+.photo-popup img { display: block; max-width: 320px; width: 100%; height: auto; border-radius: 6px; margin-bottom: 4px; cursor: zoom-in; }
 .photo-popup .popup-subtitle { display: block; margin-top: 2px; }
 
 .photo-marker {
@@ -379,7 +379,11 @@ function loadLayer(key) {
   if (document.getElementById('track-toggle').checked) flightTrackLayer.addTo(map);
   if (document.getElementById('photos-toggle').checked) photosLayer.addTo(map);
   flightTrackLayer.eachLayer(function (l) { l.bringToFront(); });
-  photosLayer.eachLayer(function (l) { l.bringToFront(); });
+  // photosLayer holds L.marker instances, not L.Path -- markers have no
+  // bringToFront() (that crashed here, silently killing the rest of this
+  // function: legend never updated, and everything registered later in the
+  // script -- locate/info buttons -- never got wired up either). Markers
+  // render above vector fills by default, so nothing else is needed.
   updateLegend();
 }
 
@@ -397,7 +401,10 @@ var flightTrackLayer = L.geoJSON(FLIGHT_TRACK_DATA, {
 function photoPopupContent(p) {
   var meta = p.author || '';
   if (p.time) meta += (meta ? ' &middot; ' : '') + p.time.replace('T', ' ').replace('Z', ' UTC');
-  return '<div class="popup photo-popup"><img src="photos/' + p.file + '" alt="Flight photo" loading="lazy">' +
+  // image links to the same file full-screen in a new tab -- an easy way
+  // to get pinch/native zoom without building a custom lightbox
+  return '<div class="popup photo-popup"><a href="photos/' + p.file + '" target="_blank" rel="noopener">' +
+    '<img src="photos/' + p.file + '" alt="Flight photo (tap to enlarge)" loading="lazy"></a>' +
     (meta ? '<span class="popup-subtitle">' + meta + '</span>' : '') + '</div>';
 }
 var photoIcon = L.divIcon({
@@ -408,7 +415,7 @@ var photoIcon = L.divIcon({
 });
 var photosLayer = L.layerGroup(
   PHOTOS_DATA.map(function (p) {
-    return L.marker([p.lat, p.lon], { icon: photoIcon }).bindPopup(photoPopupContent(p));
+    return L.marker([p.lat, p.lon], { icon: photoIcon }).bindPopup(photoPopupContent(p), { maxWidth: 340 });
   })
 );
 
@@ -417,7 +424,7 @@ document.getElementById('track-toggle').addEventListener('change', function (e) 
   else map.removeLayer(flightTrackLayer);
 });
 document.getElementById('photos-toggle').addEventListener('change', function (e) {
-  if (e.target.checked) { photosLayer.addTo(map); photosLayer.eachLayer(function (l) { l.bringToFront(); }); }
+  if (e.target.checked) photosLayer.addTo(map);
   else map.removeLayer(photosLayer);
 });
 

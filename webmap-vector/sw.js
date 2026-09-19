@@ -4,10 +4,10 @@
 // ones stay available offline without pre-downloading everything upfront
 // (80 photos, ~20MB, would make first install slow otherwise).
 //
-// 20260919153005 is stamped at build time (scripts/build_vector_html.R)
+// 20260919155449 is stamped at build time (scripts/build_vector_html.R)
 // so every rebuild invalidates the previous cache automatically.
 
-var CACHE_NAME = 'ug-ecoregions-20260919153005';
+var CACHE_NAME = 'ug-ecoregions-20260919155449';
 var APP_SHELL = [
   './',
   './index.html',

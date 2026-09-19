@@ -10,8 +10,13 @@ GitHub Pages serves from `main` root. Two parallel maps:
 - **`webmap/`** — lighter image-based alternative (static PNG overlays).
   Live at `/webmap/`.
 
-Both are self-contained single-file `index.html` (Leaflet + all data
-inlined as base64/GeoJSON), installable PWAs (manifest + service worker).
+Both are installable PWAs (manifest + service worker). `webmap/` is fully
+self-contained (base64 images inlined). `webmap-vector/` inlines the
+classification GeoJSON but serves flight photos as separate static files
+under `webmap-vector/photos/` (80 photos, ~20MB — too much to inline;
+service worker caches them opportunistically as viewed, not on install).
+`webmap-vector/` also has a flight-track overlay (`data/flight_track.geojson`)
+and photo markers (`data/photos.json`), independently toggleable.
 
 ## External data (not in repo, hardcoded absolute paths in scripts)
 
@@ -67,24 +72,56 @@ inlined as base64/GeoJSON), installable PWAs (manifest + service worker).
    non-ASCII `ü`). Always write an R script file and run
    `Rscript file.R` instead of inline `-e`.
 
-8. **`L.geoJSON()` returns a `FeatureGroup`, which has no `bringToFront()`**
-   (only individual `L.Path` layers do). Calling it throws and can break
-   click/popup handling elsewhere on the page. Use
-   `group.eachLayer(l => l.bringToFront())`, and avoid reordering z-index
-   on every hover — only do it once when a layer loads.
+8. **`L.geoJSON()`/`L.layerGroup()` return a `FeatureGroup`, which has no
+   `bringToFront()`** — and neither does `L.marker()` (only `L.Path` and
+   its subclasses — Polyline, Polygon, Circle — have it). Calling it on a
+   group or a marker throws a `TypeError` that silently kills the rest of
+   whatever function it's in, including code registered *later* in the
+   script (this broke the legend, locate button, and info button all at
+   once — the crash was inside `loadLayer()`, called before those were set
+   up). Use `group.eachLayer(l => l.bringToFront())` for Path-based groups
+   only; markers render above vector fills by default and need nothing.
+   Avoid reordering z-index on every hover — only do it once on layer load.
 
-9. **Git push works via cached Git Credential Manager** (account
-   `Herrnegger`) — no `gh` CLI installed. To call GitHub's API directly
-   (e.g. enabling Pages), extract a token with
-   `git credential fill <<< $'protocol=https\nhost=github.com\n'` and use
-   it in a `curl -H "Authorization: token $TOKEN"` call. Never print the
-   token to chat.
+9. **GPX files can have multiple track segments** (`track_seg_id`), and
+   the point-index field (`track_seg_point_id`) resets to 0 at the start
+   of each one. Sorting only by point-index without also sorting by
+   segment interleaves all segments into a chaotic zigzag (consecutive
+   "points" jumping ~70km) — this passed `st_simplify()` without error but
+   froze the browser trying to render/simplify it. Always
+   `order(track_seg_id, track_seg_point_id)`, and keep segments as
+   separate line features rather than bridging them with a straight line.
+
+10. **Debugging a built page without a live browser**: headless Chrome
+    prints console errors (including uncaught exceptions) to stderr with
+    `--enable-logging=stderr --v=1`:
+    `chrome.exe --headless=new --disable-gpu --enable-logging=stderr --v=1
+    --virtual-time-budget=8000 --dump-dom "file:///<path>" > dom.html
+    2> console.log`, then grep console.log for `Uncaught`/`CONSOLE`. Found
+    the marker `bringToFront()` bug this way in seconds instead of
+    guessing from symptoms.
+
+11. **Photo EXIF (GPS + orientation) via Python/Pillow**, no exiftool
+    needed: GPS lives in a sub-IFD, not a flat tag —
+    `exif.get_ifd(0x8825)`, not `exif.get(34853)` (that returns an int
+    offset, not a dict). Auto-rotate with
+    `ImageOps.exif_transpose(img)` *before* resizing (bakes the EXIF
+    Orientation tag into pixels; iPhone/Pixel photos are stored
+    unrotated with just an orientation flag).
+
+12. **Git push works via cached Git Credential Manager** (account
+    `Herrnegger`) — no `gh` CLI installed. To call GitHub's API directly
+    (e.g. enabling Pages), extract a token with
+    `git credential fill <<< $'protocol=https\nhost=github.com\n'` and use
+    it in a `curl -H "Authorization: token $TOKEN"` call. Never print the
+    token to chat.
 
 ## Build commands
 
 ```r
 # Vector map (primary):
 Rscript scripts/build_vector_layers.R   # names, stats, lake clip, colors -> webmap-vector/data/*.geojson
+Rscript scripts/build_flight_track.R    # GPX -> webmap-vector/data/flight_track.geojson (optional overlay)
 Rscript scripts/build_vector_html.R     # inject into webmap-vector/index.html + sw.js
 
 # Image map (lighter alternative):
@@ -92,4 +129,11 @@ Rscript scripts/build_layers.R          # crop/reproject GeoTIFFs + legend panel
 Rscript scripts/build_html.R            # inject into webmap/index.html + sw.js
 ```
 
+```
+# Flight photos (optional overlay): extracts GPS+time via EXIF, auto-rotates,
+# resizes to 1400px, writes webmap-vector/photos/*.jpg + data/photos.json
+python scripts/process_flight_photos.py
+```
+
 R packages needed: `terra`, `sf`, `classInt`, `colorspace`, `png`, `base64enc`.
+Python: `Pillow`.
