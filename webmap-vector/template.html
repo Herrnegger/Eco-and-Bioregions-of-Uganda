@@ -72,6 +72,22 @@ html, body {
 }
 #opacity-row input[type="range"] { flex: 1; max-width: 260px; }
 #opacity-value { font-size: 11px; color: #555; width: 32px; text-align: right; flex-shrink: 0; }
+#overlay-toggles { display: flex; gap: 14px; margin-top: 8px; flex-wrap: wrap; }
+.checkbox-label { display: flex; align-items: center; gap: 5px; font-size: 13px; color: #333; cursor: pointer; }
+.checkbox-label input { margin: 0; width: 15px; height: 15px; }
+
+.photo-popup img { display: block; max-width: 240px; width: 100%; height: auto; border-radius: 6px; margin-bottom: 4px; }
+.photo-popup .popup-subtitle { display: block; margin-top: 2px; }
+
+.photo-marker {
+  width: 20px; height: 20px;
+  background: #fff;
+  border: 2px solid #d9822b;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
 
 #top-right-btns { display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
 #locate-btn, #info-btn {
@@ -174,6 +190,10 @@ html, body {
       <input type="range" id="opacity-slider" min="0" max="100" value="80">
       <span id="opacity-value">80%</span>
     </div>
+    <div id="overlay-toggles">
+      <label class="checkbox-label"><input type="checkbox" id="track-toggle" checked> Flight track</label>
+      <label class="checkbox-label"><input type="checkbox" id="photos-toggle" checked> Photos</label>
+    </div>
   </div>
   <div id="top-right-btns">
     <button id="locate-btn" title="Show my location">&#128205;</button>
@@ -199,6 +219,7 @@ html, body {
     </div>
     <div id="info-modal-body">
       <p><strong>⚠️ This web map is a fast, informal visualization tool</strong> built to make the published classification easy to browse, click for stats, and check against GPS position in the field. Please refer to the paper below for more information.</p>
+      <p>The boundaries are drawn precisely, but the ecology isn't: the classification comes from clustering continuous environmental gradients, so real transitions between neighboring zones are gradual, not the sharp edges a polygon implies.</p>
       <p>Click any region for its area, share of Uganda, mean elevation, and mean annual precipitation. Area is computed directly from the polygon geometry; elevation and precipitation are area-weighted zonal statistics computed from WorldClim data (rainfall reflects the 1971&ndash;2000 climate normal).</p>
       <p>Switch <strong>Display</strong> to color regions by elevation or precipitation instead of category, using natural-breaks classification.</p>
       <p><strong>Citation:</strong><br>
@@ -222,6 +243,8 @@ var LAYER_DATA = {
   bioregion_iii: __GEOJSON_BIOREGION_III__
 };
 var LAKES_DATA = __GEOJSON_LAKES__;
+var FLIGHT_TRACK_DATA = __GEOJSON_FLIGHT_TRACK__;
+var PHOTOS_DATA = __PHOTOS_JSON__;
 var BREAKS = __BREAKS_JSON__;
 
 var LAYER_LABELS = {
@@ -353,8 +376,50 @@ function loadLayer(key) {
   currentLayerKey = key;
   lakesLayer.addTo(map);
   lakesLayer.eachLayer(function (l) { l.bringToFront(); });
+  if (document.getElementById('track-toggle').checked) flightTrackLayer.addTo(map);
+  if (document.getElementById('photos-toggle').checked) photosLayer.addTo(map);
+  flightTrackLayer.eachLayer(function (l) { l.bringToFront(); });
+  photosLayer.eachLayer(function (l) { l.bringToFront(); });
   updateLegend();
 }
+
+// Flight track: a simplified GPX line, always drawn on top of the
+// classification fill (like the lakes overlay).
+var flightTrackLayer = L.geoJSON(FLIGHT_TRACK_DATA, {
+  style: { color: '#e6194b', weight: 2.5, opacity: 0.85, dashArray: '6,4' }
+});
+
+// Flight photos: one marker per geotagged photo, click for a popup with the
+// (already resized) image. Images are served as separate static files
+// (webmap-vector/photos/), not embedded -- 80 photos would bloat a single
+// self-contained HTML far past what's reasonable, and this page is hosted
+// via GitHub Pages anyway, so plain relative URLs work fine.
+function photoPopupContent(p) {
+  var meta = p.author || '';
+  if (p.time) meta += (meta ? ' &middot; ' : '') + p.time.replace('T', ' ').replace('Z', ' UTC');
+  return '<div class="popup photo-popup"><img src="photos/' + p.file + '" alt="Flight photo" loading="lazy">' +
+    (meta ? '<span class="popup-subtitle">' + meta + '</span>' : '') + '</div>';
+}
+var photoIcon = L.divIcon({
+  className: '',
+  html: '<div class="photo-marker">&#128247;</div>',
+  iconSize: [20, 20],
+  iconAnchor: [10, 10]
+});
+var photosLayer = L.layerGroup(
+  PHOTOS_DATA.map(function (p) {
+    return L.marker([p.lat, p.lon], { icon: photoIcon }).bindPopup(photoPopupContent(p));
+  })
+);
+
+document.getElementById('track-toggle').addEventListener('change', function (e) {
+  if (e.target.checked) { flightTrackLayer.addTo(map); flightTrackLayer.eachLayer(function (l) { l.bringToFront(); }); }
+  else map.removeLayer(flightTrackLayer);
+});
+document.getElementById('photos-toggle').addEventListener('change', function (e) {
+  if (e.target.checked) { photosLayer.addTo(map); photosLayer.eachLayer(function (l) { l.bringToFront(); }); }
+  else map.removeLayer(photosLayer);
+});
 
 function restyleAll() {
   if (currentGeoLayer) currentGeoLayer.setStyle(styleFeature);

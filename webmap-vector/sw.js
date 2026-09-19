@@ -1,11 +1,13 @@
 // Service worker for offline use: caches the app shell (this page, embedded
-// data included) on install, and opportunistically caches basemap tiles as
-// they're fetched so previously viewed areas stay visible without a signal.
+// classification data included) on install, and opportunistically caches
+// basemap tiles and flight photos as they're fetched, so previously viewed
+// ones stay available offline without pre-downloading everything upfront
+// (80 photos, ~20MB, would make first install slow otherwise).
 //
-// 20260917201557 is stamped at build time (scripts/build_html.R) so every
-// rebuild invalidates the previous cache automatically.
+// 20260919153005 is stamped at build time (scripts/build_vector_html.R)
+// so every rebuild invalidates the previous cache automatically.
 
-var CACHE_NAME = 'ug-ecoregions-20260917201557';
+var CACHE_NAME = 'ug-ecoregions-20260919153005';
 var APP_SHELL = [
   './',
   './index.html',
@@ -38,10 +40,12 @@ self.addEventListener('activate', function (event) {
 self.addEventListener('fetch', function (event) {
   var url = event.request.url;
   var isTile = url.indexOf('arcgisonline.com') !== -1;
+  var isPhoto = url.indexOf('/photos/') !== -1;
 
-  if (isTile) {
-    // basemap tiles: try the network first (fresh imagery), fall back to
-    // whatever was cached before if offline; cache successful responses.
+  if (isTile || isPhoto) {
+    // basemap tiles and flight photos: try the network first (fresh /
+    // full-res), fall back to whatever was cached before if offline;
+    // cache successful responses so previously viewed ones work offline.
     event.respondWith(
       fetch(event.request).then(function (resp) {
         var clone = resp.clone();

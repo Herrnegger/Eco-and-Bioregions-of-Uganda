@@ -30,6 +30,8 @@ replacements <- list(
   "__GEOJSON_BIOREGION_II__"   = read_text(file.path(data_dir, "bioregion_ii.geojson")),
   "__GEOJSON_BIOREGION_III__"  = read_text(file.path(data_dir, "bioregion_iii.geojson")),
   "__GEOJSON_LAKES__"          = read_text(file.path(data_dir, "lakes.geojson")),
+  "__GEOJSON_FLIGHT_TRACK__"   = read_text(file.path(data_dir, "flight_track.geojson")),
+  "__PHOTOS_JSON__"            = read_text(file.path(data_dir, "photos.json")),
   "__BREAKS_JSON__"            = read_text(file.path(data_dir, "breaks.json"))
 )
 

@@ -6,6 +6,8 @@ An interactive web map of Uganda's hierarchical ecoregion / bioregion classifica
 
 > ### About this map
 > An interactive companion to the published classification — built for browsing, sharing, and checking against GPS position in the field. For citation or detailed analysis, please refer to the paper (see [Citation](#citation--data) below).
+>
+> The lines on the map are drawn precisely, but the ecology underneath them isn't: the classification comes from clustering continuous environmental gradients (climate, elevation, hydrology), so real transitions between neighboring zones are gradual, not the sharp edges a polygon boundary implies.
 
 ## What this is
 

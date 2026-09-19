@@ -1,0 +1,562 @@
+[
+ {
+  "file": "photo_001.jpg",
+  "lat": 0.186261,
+  "lon": 32.587219,
+  "time": "2026-09-19T09:25:20Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_002.jpg",
+  "lat": 0.238617,
+  "lon": 32.501061,
+  "time": "2026-09-19T09:29:04Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_003.jpg",
+  "lat": 0.223225,
+  "lon": 32.460256,
+  "time": "2026-09-19T09:30:40Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_004.jpg",
+  "lat": 0.200939,
+  "lon": 32.419467,
+  "time": "2026-09-19T09:32:12Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_005.jpg",
+  "lat": 0.176,
+  "lon": 32.369636,
+  "time": "2026-09-19T09:34:11Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_006.jpg",
+  "lat": 0.172778,
+  "lon": 32.362944,
+  "time": "2026-09-19T09:34:27Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_007.jpg",
+  "lat": 0.1291,
+  "lon": 32.270053,
+  "time": "2026-09-19T09:38:21Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_008.jpg",
+  "lat": 0.107444,
+  "lon": 32.210878,
+  "time": "2026-09-19T09:40:37Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_009.jpg",
+  "lat": 0.09345,
+  "lon": 32.169389,
+  "time": "2026-09-19T09:42:20Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_010.jpg",
+  "lat": 0.042244,
+  "lon": 32.029517,
+  "time": "2026-09-19T09:48:19Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_011.jpg",
+  "lat": 0.039508,
+  "lon": 32.020031,
+  "time": "2026-09-19T09:48:44Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_012.jpg",
+  "lat": 0.025853,
+  "lon": 31.985106,
+  "time": "2026-09-19T09:50:11Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_013.jpg",
+  "lat": 0.002003,
+  "lon": 31.908847,
+  "time": "2026-09-19T09:53:10Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_014.jpg",
+  "lat": -0.010089,
+  "lon": 31.872211,
+  "time": "2026-09-19T09:54:38Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_015.jpg",
+  "lat": -0.032975,
+  "lon": 31.809303,
+  "time": "2026-09-19T09:57:09Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_016.jpg",
+  "lat": -0.038533,
+  "lon": 31.792189,
+  "time": "2026-09-19T09:57:51Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_017.jpg",
+  "lat": -0.043956,
+  "lon": 31.774967,
+  "time": "2026-09-19T09:58:34Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_018.jpg",
+  "lat": -0.083986,
+  "lon": 31.724639,
+  "time": "2026-09-19T10:01:16Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_019.jpg",
+  "lat": -0.102192,
+  "lon": 31.709447,
+  "time": "2026-09-19T10:02:14Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_020.jpg",
+  "lat": -0.104019,
+  "lon": 31.707942,
+  "time": "2026-09-19T10:02:18Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_021.jpg",
+  "lat": -0.127192,
+  "lon": 31.690139,
+  "time": "2026-09-19T10:03:28Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_022.jpg",
+  "lat": -0.207056,
+  "lon": 31.555319,
+  "time": "2026-09-19T10:09:40Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_023.jpg",
+  "lat": -0.207667,
+  "lon": 31.552539,
+  "time": "2026-09-19T10:09:47Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_024.jpg",
+  "lat": -0.217081,
+  "lon": 31.499344,
+  "time": "2026-09-19T10:11:47Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_025.jpg",
+  "lat": -0.234578,
+  "lon": 31.398825,
+  "time": "2026-09-19T10:15:29Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_026.jpg",
+  "lat": -0.234692,
+  "lon": 31.398192,
+  "time": "2026-09-19T10:15:31Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_027.jpg",
+  "lat": -0.237031,
+  "lon": 31.388817,
+  "time": "2026-09-19T10:15:52Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_028.jpg",
+  "lat": -0.237547,
+  "lon": 31.386739,
+  "time": "2026-09-19T10:15:55Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_029.jpg",
+  "lat": -0.267514,
+  "lon": 31.250339,
+  "time": "2026-09-19T10:21:11Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_030.jpg",
+  "lat": -0.284386,
+  "lon": 31.165858,
+  "time": "2026-09-19T10:24:28Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_031.jpg",
+  "lat": -0.285058,
+  "lon": 31.163742,
+  "time": "2026-09-19T10:24:32Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_032.jpg",
+  "lat": -0.28975,
+  "lon": 31.152033,
+  "time": "2026-09-19T10:25:01Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_033.jpg",
+  "lat": -0.292075,
+  "lon": 31.148325,
+  "time": "2026-09-19T10:25:11Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_034.jpg",
+  "lat": -0.307542,
+  "lon": 31.124078,
+  "time": "2026-09-19T10:26:18Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_035.jpg",
+  "lat": -0.326044,
+  "lon": 31.093244,
+  "time": "2026-09-19T10:27:37Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_036.jpg",
+  "lat": -0.368111,
+  "lon": 30.984767,
+  "time": "2026-09-19T10:31:58Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_037.jpg",
+  "lat": -0.3978,
+  "lon": 30.917372,
+  "time": "2026-09-19T10:34:52Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_038.jpg",
+  "lat": -0.401794,
+  "lon": 30.908042,
+  "time": "2026-09-19T10:35:15Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_039.jpg",
+  "lat": -0.461214,
+  "lon": 30.755717,
+  "time": "2026-09-19T10:41:44Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_040.jpg",
+  "lat": -0.479942,
+  "lon": 30.716806,
+  "time": "2026-09-19T10:43:23Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_041.jpg",
+  "lat": -0.497778,
+  "lon": 30.688842,
+  "time": "2026-09-19T10:44:42Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_042.jpg",
+  "lat": -0.537542,
+  "lon": 30.641239,
+  "time": "2026-09-19T10:47:26Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_043.jpg",
+  "lat": -0.554208,
+  "lon": 30.628994,
+  "time": "2026-09-19T10:48:22Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_044.jpg",
+  "lat": -0.554392,
+  "lon": 30.628861,
+  "time": "2026-09-19T10:48:23Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_045.jpg",
+  "lat": -0.544847,
+  "lon": 30.586225,
+  "time": "2026-09-19T10:50:19Z",
+  "author": "Gabriel Stecher"
+ },
+ {
+  "file": "photo_046.jpg",
+  "lat": -0.428567,
+  "lon": 30.922022,
+  "time": "2026-09-19T13:04:33Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_047.jpg",
+  "lat": -0.427814,
+  "lon": 30.924003,
+  "time": "2026-09-19T13:04:39Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_048.jpg",
+  "lat": -0.246322,
+  "lon": 31.414461,
+  "time": "2026-09-19T13:26:39Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_049.jpg",
+  "lat": -0.227703,
+  "lon": 31.486692,
+  "time": "2026-09-19T13:29:46Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_050.jpg",
+  "lat": -0.226164,
+  "lon": 31.493156,
+  "time": "2026-09-19T13:30:02Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_051.jpg",
+  "lat": -0.218558,
+  "lon": 31.530519,
+  "time": "2026-09-19T13:31:36Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_052.jpg",
+  "lat": -0.218014,
+  "lon": 31.533467,
+  "time": "2026-09-19T13:31:42Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_053.jpg",
+  "lat": -0.212728,
+  "lon": 31.565772,
+  "time": "2026-09-19T13:33:04Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_054.jpg",
+  "lat": -0.177836,
+  "lon": 31.684514,
+  "time": "2026-09-19T13:38:16Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_055.jpg",
+  "lat": -0.152211,
+  "lon": 31.753014,
+  "time": "2026-09-19T13:41:22Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_056.jpg",
+  "lat": -0.100633,
+  "lon": 31.872822,
+  "time": "2026-09-19T13:46:45Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_057.jpg",
+  "lat": -0.091881,
+  "lon": 31.896661,
+  "time": "2026-09-19T13:47:46Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_058.jpg",
+  "lat": -0.072811,
+  "lon": 31.943494,
+  "time": "2026-09-19T13:49:49Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_059.jpg",
+  "lat": -0.0588,
+  "lon": 31.981789,
+  "time": "2026-09-19T13:51:29Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_060.jpg",
+  "lat": 0.034069,
+  "lon": 32.234478,
+  "time": "2026-09-19T14:02:29Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_061.jpg",
+  "lat": 0.037269,
+  "lon": 32.243086,
+  "time": "2026-09-19T14:02:52Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_062.jpg",
+  "lat": 0.038467,
+  "lon": 32.246625,
+  "time": "2026-09-19T14:03:01Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_063.jpg",
+  "lat": 0.060933,
+  "lon": 32.312633,
+  "time": "2026-09-19T14:05:49Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_064.jpg",
+  "lat": 0.072536,
+  "lon": 32.342058,
+  "time": "2026-09-19T14:07:04Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_065.jpg",
+  "lat": 0.073736,
+  "lon": 32.344122,
+  "time": "2026-09-19T14:07:10Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_066.jpg",
+  "lat": 0.090036,
+  "lon": 32.393339,
+  "time": "2026-09-19T14:09:26Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_067.jpg",
+  "lat": 0.078008,
+  "lon": 32.433247,
+  "time": "2026-09-19T14:11:35Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_068.jpg",
+  "lat": 0.074975,
+  "lon": 32.346206,
+  "time": "2026-09-19T16:46:22Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_069.jpg",
+  "lat": 0.057003,
+  "lon": 32.300753,
+  "time": "2026-09-19T16:46:51Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_070.jpg",
+  "lat": -0.311547,
+  "lon": 31.214211,
+  "time": "2026-09-19T16:48:03Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_071.jpg",
+  "lat": -0.334492,
+  "lon": 31.144231,
+  "time": "2026-09-19T16:50:07Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_072.jpg",
+  "lat": -0.46005,
+  "lon": 30.817653,
+  "time": "2026-09-19T16:51:16Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_073.jpg",
+  "lat": -0.533503,
+  "lon": 30.639786,
+  "time": "2026-09-19T16:52:13Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_074.jpg",
+  "lat": -0.535567,
+  "lon": 30.637306,
+  "time": "2026-09-19T16:57:51Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_075.jpg",
+  "lat": -0.416064,
+  "lon": 30.873081,
+  "time": "2026-09-19T16:59:12Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_076.jpg",
+  "lat": -0.273406,
+  "lon": 31.225175,
+  "time": "2026-09-19T17:06:22Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_077.jpg",
+  "lat": -0.223661,
+  "lon": 31.455756,
+  "time": "2026-09-19T17:07:45Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_078.jpg",
+  "lat": -0.017556,
+  "lon": 31.85115,
+  "time": "2026-09-19T17:08:12Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_079.jpg",
+  "lat": 0.001536,
+  "lon": 31.907447,
+  "time": "2026-09-19T17:08:59Z",
+  "author": "Mathew Herrnegger"
+ },
+ {
+  "file": "photo_080.jpg",
+  "lat": 0.077356,
+  "lon": 32.136519,
+  "time": "2026-09-19T17:09:32Z",
+  "author": "Mathew Herrnegger"
+ }
+]
